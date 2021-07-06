@@ -3,3 +3,20 @@ Instalando dependencias
 npm i restify@6.3.4 --save -E
 npm i @types/restify@5.0.6 -D -E
 npm i nodemon -g
+
+    //res.setHeader('Content-Type','application/json');
+    //res.status(StatusCode)
+
+        res.contentType = 'application/json';
+        res.status(400);
+        res.setHeader('Content-Type','application/json');
+        res.json({message:'hello'});
+        res.json({
+            browser: req.userAgent(),
+            method:req.method,
+            url:req.href(),
+            path:req.path(),
+            query:req.query
+        });
+
+server -> server.ts

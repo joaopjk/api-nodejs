@@ -1,15 +1,15 @@
-import * as restify from 'restify';
+import {Server} from './server/server';
 
-const server = restify.createServer({
-    name:'meat-api',
-    version:'1.0.0'
+const server = new Server();
+server.bootstrap().then(s => {
+    console.log('Server is listening on:', s.application.address());
+}).catch(error=>{
+    console.log('Server failed to start');
+    console.error(error);
+    process.exit(1);
 });
 
-server.get('/hello',(req,res,next)=>{
-   res.json({message:'hello'});
-   return next();
-});
 
-server.listen(3000,()=>{
-    console.log("Api is running on http://localhost:3000 ");
-});
+
+
+
