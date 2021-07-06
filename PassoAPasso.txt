@@ -1,0 +1,5 @@
+Instalando dependencias
+
+npm i restify@6.3.4 --save -E
+npm i @types/restify@5.0.6 -D -E
+npm i nodemon -g
