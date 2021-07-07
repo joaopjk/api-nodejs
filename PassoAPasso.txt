@@ -24,3 +24,6 @@ server -> server.ts
 npm i mongoose@4.13.9 -P -E
 npm i @types/mongoose@4.7.32
 server.ts
+
+npm i restify-errors@5.0.0 -P -E
+npm i @types/restify-errors@4.3.2 -D -E
