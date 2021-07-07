@@ -20,3 +20,7 @@ npm i nodemon -g
         });
 
 server -> server.ts
+
+npm i mongoose@4.13.9 -P -E
+npm i @types/mongoose@4.7.32
+server.ts

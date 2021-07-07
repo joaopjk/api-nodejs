@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/joaopjk/api-nodejs#readme",
   "dependencies": {
+    "@types/mongoose": "^4.7.32",
+    "mongoose": "4.13.9",
     "restify": "6.3.4"
   },
   "devDependencies": {
