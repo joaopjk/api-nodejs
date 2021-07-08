@@ -1,29 +1,29 @@
 import * as restify from "restify";
 
-export const errorHandler = (req:restify.Request,res:restify.Response,err,done)=>{
+export const errorHandler = (req: restify.Request, res: restify.Response, err, done) => {
     console.log(err);
 
-    err.toJSON =()=>{
+    err.toJSON = () => {
         return {
-            message:err.message
+            message: err.message
         }
     };
 
-    switch (err.name){
+    switch (err.name) {
         case 'MongoError':
-            if(err.code === 11000){
+            if (err.code === 11000) {
                 err.statusCode = 400;
             }
             break;
         case 'ValidationError':
             err.statusCode = 400;
             let messages: any [] = [];
-            for(let index in err.errors){
-                messages.push({message:err.errors[index].message});
+            for (let index in err.errors) {
+                messages.push({message: err.errors[index].message});
             }
-            err.toJSON =() =>{
+            err.toJSON = () => {
                 return {
-                    errors:messages
+                    errors: messages
                 }
             }
             break;

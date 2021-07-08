@@ -1,4 +1,7 @@
 import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
+import {validateCPF} from "../common/validators";
+import {environment} from "../common/environment";
 
 export interface User extends mongoose.Document {
     name: string,
@@ -17,7 +20,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true,
-        match:/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        match: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     },
     password: {
         type: String,
@@ -27,8 +30,32 @@ const userSchema = new mongoose.Schema({
     gender: {
         type: String,
         required: false,
-        enum:['Male','Female']
+        enum: ['Male', 'Female']
+    },
+    cpf: {
+        type: String,
+        required: false,
+        validate: {
+            validator: validateCPF,
+            message: '{PATH}: Invalid CPF({VALUE})'
+        }
     }
 });
+
+userSchema.pre('save', function (next) {
+    //Não utilizar arrow.
+    const user: User = this;
+    if (!user.isModified('password')) {
+        next();
+    } else {
+        bcrypt.hash(user.password, environment.security.saltRounds)
+            .then(hash => {
+                user.password = hash;
+                next()
+            })
+            .catch(next);
+    }
+
+})
 
 export const User = mongoose.model<User>('User', userSchema);
