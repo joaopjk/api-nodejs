@@ -2,6 +2,7 @@ import * as restify from "restify";
 import {User} from "./users.model";
 import {ModelRouter} from "../common/model-router";
 import {authenticate} from "../security/auth.handler";
+import {authorize} from "../security/authz.handler";
 
 class UsersRouters extends ModelRouter<User> {
     constructor() {
@@ -27,7 +28,7 @@ class UsersRouters extends ModelRouter<User> {
     }
 
     applyRoutes(application: restify.Server) {
-        application.get(this.basePath, this.findAll)
+        application.get(this.basePath, [authorize('admin'),this.findAll])
         application.get(`${this.basePath}/email/:email`, this.findByEmail)
         application.get(`${this.basePath}/:id`, [this.validateId, this.findById]);
         application.post(`${this.basePath}`, this.save);
