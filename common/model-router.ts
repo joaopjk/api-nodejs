@@ -4,8 +4,17 @@ import {NotFoundError} from "restify-errors";
 
 export abstract class ModelRouter<D extends mongoose.Document> extends Router {
 
+    basePath: string;
+
     protected constructor(protected model: mongoose.Model<D>) {
         super();
+        this.basePath=`/${model.collection.name}`
+    }
+
+    envelope(document: any): any {
+        let resource = Object.assign({_links: {}}, document.toJSON());
+        resource._links.self = `${this.basePath}/${resource._id}`;
+        return resource;
     }
 
     protected prepareOne(query: mongoose.DocumentQuery<D, D>): mongoose.DocumentQuery<D, D> {
@@ -14,7 +23,7 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
 
     validateId = (req, res, next) => {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            next(new NotFoundError('Documento not found'))
+            next(new NotFoundError('Documento not found'));
         }
         next();
     }
@@ -26,7 +35,7 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
     };
 
     findById = (req, res, next) => {
-        this.prepareOne( this.model
+        this.prepareOne(this.model
             .findById(req.params.id))
             .then(this.render(res, next))
             .catch(next);
